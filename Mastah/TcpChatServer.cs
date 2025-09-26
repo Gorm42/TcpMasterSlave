@@ -41,10 +41,17 @@ namespace Mastah
                     try
                     {
                         string jsonReceived = await reader.ReadLineAsync();
-                        if (jsonReceived == null || jsonReceived == "exitThisChat") break;
+                        if (jsonReceived == null || jsonReceived == "exitThisChat") 
                         {
-                            Message message = JsonSerializer.Deserialize<Message>(jsonReceived);
-                            Console.WriteLine($"[{message.Sender}]: {message.Text}");
+                            break; 
+                        }
+                        
+                        Message message = JsonSerializer.Deserialize<Message>(jsonReceived);
+                        Console.WriteLine($"[{message.Sender}]: {message.Type}");
+
+                        if (message.Type == "crack_result")
+                        {
+                            List<UserInfoClearText> results = JsonSerializer.Deserialize<List<UserInfoClearText>>(message.Data);
                         }
                     }
                     catch (Exception ex)
