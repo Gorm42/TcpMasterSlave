@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dobby
+namespace Mastah
 {
     [Serializable]
     public class UserInfo
@@ -13,6 +13,7 @@ namespace Dobby
         public string EncryptedPasswordBase64 { get; set; }
         public byte[] EncryptedPassword { get; set; }
 
+        //for json deserialization
         public UserInfo()
         {
             
@@ -20,11 +21,11 @@ namespace Dobby
 
         public UserInfo(string username, string encryptedPasswordBase64)
         {
-            if (username == null)
+            if(username == null)
             {
-                throw new ArgumentNullException("Username is empty");
+                throw new ArgumentNullException("Username cannot be null");
             }
-            if (encryptedPasswordBase64 == null)
+            if(encryptedPasswordBase64 == null)
             {
                 throw new ArgumentNullException("EncryptedPasswordBase64");
             }
@@ -36,8 +37,9 @@ namespace Dobby
         public UserInfo(string username, byte[] encryptedPassword)
         {
             Username = username;
-            EncryptedPassword = encryptedPassword;
             EncryptedPasswordBase64 = Convert.ToBase64String(encryptedPassword);
+            EncryptedPassword = encryptedPassword;
+            
         }
 
         public override string ToString()

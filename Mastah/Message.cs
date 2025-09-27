@@ -8,9 +8,14 @@ namespace Mastah
 {
     public class Message
     {
-        public string? Sender { get; set; }
-        public string? Type { get; set; }
-        public string? Data { get; set; }
+        public string Sender { get; set; }
+        public string Type { get; set; }
+        public string Data { get; set; }
+
+        public Message()
+        {
+            
+        }
 
         public Message(string sender, string type, string data)
         {

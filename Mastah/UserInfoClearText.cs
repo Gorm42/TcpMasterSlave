@@ -10,13 +10,14 @@ namespace Mastah
     {
         public string Username { get; set; }
         public string Password { get; set; }
+
         public UserInfoClearText(string username, string password)
         {
-            if (Username == null)
+            if (username == null)
             {
                 throw new ArgumentNullException("Username cannot be null");
             }
-            if(Password == null)
+            if(password == null)
             {
                 throw new ArgumentNullException("Password cannot be null");
             }

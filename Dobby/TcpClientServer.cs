@@ -54,7 +54,7 @@ namespace Dobby
                         //Message messageReceived = System.Type.Json.JsonSerializer.Deserialize<Message>(jsonReceived);
                         if (message.Type == "crack_chunk")
                         {
-                            List<UserInfo> chunk ? JsonSerializer.Deserialize<List<UserInfo>>(message.Data);
+                            List<UserInfo> chunk = JsonSerializer.Deserialize<List<UserInfo>>(message.Data);
 
                             //Crack the chunk
                             List<UserInfoClearText> results = CrackChunk(chunk);
@@ -106,7 +106,7 @@ namespace Dobby
         {
             List<UserInfoClearText> results = new List<UserInfoClearText>();
 
-            foreach (var userInfo in chunk)
+            foreach (UserInfo userInfo in chunk)
             {
                 bool cracked = false;
                 for (int i = 0; i< 10000; i++)
@@ -114,7 +114,7 @@ namespace Dobby
                     string candidate = i.ToString("D4");
                     byte[] candidateHash = ComputeSHA1(candidate);
 
-                    if (candidateHash.SequenceEqual(unserInfo.EncryptedPassword))
+                    if (candidateHash.SequenceEqual(userInfo.EncryptedPassword))
                     {
                         results.Add(new UserInfoClearText(userInfo.Username, candidate));
                         Console.WriteLine($"Cracked {userInfo.Username} : {candidate}");
