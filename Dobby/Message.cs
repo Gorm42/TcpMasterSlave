@@ -9,11 +9,13 @@ namespace Dobby
     public class Message
     {
         public string Sender { get; set; }
-        public string Text { get; set; }
-        public Message(string sender, string text)
+        public string Type { get; set; }
+        public string Data { get; set; }
+        public Message(string sender, string text, string data)
         {
             Sender = sender;
-            Text = text;
+            Type = text;
+            Data = data;
         }
     }
 }

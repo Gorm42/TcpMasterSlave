@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 //using System.Net.Http;
-//using System.Security.Cryptography;
+using System.Security.Cryptography;
 //using SystemSecurity.Cryptography.X509Certificates; <-- is this neccessary?
 
 
@@ -44,11 +44,33 @@ namespace Dobby
                     try
                     {
                         string jsonReceived = await reader.ReadLineAsync();
-                        if (jsonReceived == null) break;
+                        if (jsonReceived == null)
+                        {
+                            break;
+                        }
                         // Connection closed
                         Message message = JsonSerializer.Deserialize<Message>(jsonReceived);
-                        Console.WriteLine($"[{message.Sender}]: {message.Text}");
-                        //Message messageReceived = System.Text.Json.JsonSerializer.Deserialize<Message>(jsonReceived);
+                        //Console.WriteLine($"[{message.Sender}]: {message.Type}");
+                        //Message messageReceived = System.Type.Json.JsonSerializer.Deserialize<Message>(jsonReceived);
+                        if (message.Type == "crack_chunk")
+                        {
+                            List<UserInfo> chunk ? JsonSerializer.Deserialize<List<UserInfo>>(message.Data);
+
+                            //Crack the chunk
+                            List<UserInfoClearText> results = CrackChunk(chunk);
+
+                            //send back the results
+                            string resultsJson = JsonSerializer.Serialize(results);
+                            Message resultsMessage = new Message("slave", "crack_result", resultsJson);
+                            string resultJsonMessage = JsonSerializer.Serialize(resultsMessage);
+                            await writer.WriteLineAsync(resultJsonMessage);
+
+                            Console.WriteLine("Cracked chunk and sent results back.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{message.Sender} : {message.Data}");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -70,20 +92,52 @@ namespace Dobby
                 }
                 else
                 {
-                    Message message = new Message("Client", input);
+                    Message message = new Message("Client", "chat", input);
                     string jsonMessage = JsonSerializer.Serialize(message);
                     await writer.WriteLineAsync(jsonMessage);
                 }
-
-
-
             }
 
             await receiveTask; //wait for the receive task to complete 
             Console.WriteLine("Connection closed.");
         }
 
+        private List<UserInfoClearText> CrackChunk(List<UserInfo> chunk)
+        {
+            List<UserInfoClearText> results = new List<UserInfoClearText>();
 
+            foreach (var userInfo in chunk)
+            {
+                bool cracked = false;
+                for (int i = 0; i< 10000; i++)
+                {
+                    string candidate = i.ToString("D4");
+                    byte[] candidateHash = ComputeSHA1(candidate);
+
+                    if (candidateHash.SequenceEqual(unserInfo.EncryptedPassword))
+                    {
+                        results.Add(new UserInfoClearText(userInfo.Username, candidate));
+                        Console.WriteLine($"Cracked {userInfo.Username} : {candidate}");
+                        cracked = true;
+                        break;
+                    }
+                }
+
+                if (!cracked)
+                {
+                    results.Add(new UserInfoClearText(userInfo.Username, "NOT CRACKED"));
+                }
+            }
+
+            return results;
+
+        }
+
+        private byte[] ComputeSHA1(string input)
+        {
+            using SHA1 sha1 = SHA1.Create();
+            return sha1.ComputeHash(Encoding.UTF8.GetBytes(input));
+        }
 
 
     }
