@@ -88,7 +88,7 @@ namespace Dobby
 
                 if (input?.ToLower() == "sock")
                 {
-                    running = false;
+                    client.Close();
                 }
                 else
                 {
