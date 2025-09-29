@@ -8,7 +8,7 @@ namespace Dobby
         static async Task Main(string[] args)
         {
             Console.WriteLine("Dobby here mastah!");
-            TCPClientServer clientServer = new TCPClientServer("localhost", 8080);
+            TCPClientServer clientServer = new TCPClientServer("10.107.1.240", 8080);
             await clientServer.StartAsync();
         }
     }

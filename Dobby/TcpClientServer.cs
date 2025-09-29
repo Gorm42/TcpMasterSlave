@@ -19,7 +19,7 @@ namespace Dobby
         private readonly string _host;
         private readonly int _port;
 
-        public TCPClientServer(string host = "localhost", int port = 8080)
+        public TCPClientServer(string host, int port = 8080)
         {
             _host = host;
             _port = port;
@@ -28,7 +28,7 @@ namespace Dobby
         public async Task StartAsync()
         {
             using TcpClient client = new TcpClient();
-            await client.ConnectAsync(_host, _port);
+            await client.ConnectAsync("10.107.1.240", _port); //
 
             Console.WriteLine($"Connected to server at {_host}:{_port}");
 
